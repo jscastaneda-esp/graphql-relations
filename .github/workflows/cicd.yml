@@ -16,6 +16,8 @@ jobs:
       uses: actions/checkout@master
     - name: Build image 
       run: docker build -t ${{ github.sha }} .
+    - name: Verify image
+      run: docker images
     - name: Install doctl 
       uses: digitalocean/action-doctl@v2
       with:
