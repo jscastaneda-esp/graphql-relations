@@ -1,0 +1,30 @@
+name: Build and publish manually
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Image version'
+        required: true
+
+jobs:
+  build-and-push:
+    name: build and push image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the repo
+      uses: actions/checkout@master
+    - name: Build image 
+      run: docker build -t ${{ github.repository }}:${{ github.event.inputs.version }} .
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - name: Log in to DO Container Registry
+      run: doctl registry login --expiry-seconds 600
+    - name: Tag image
+      run:
+        docker tag ${{ github.repository }}:${{ github.event.inputs.version }} registry.digitalocean.com/graphql-relations-test/graphql-relations:${{ github.event.inputs.version }}
+    - name: Push image to DO Container Registry
+      run: docker push registry.digitalocean.com/graphql-relations-test/graphql-relations:${{ github.event.inputs.version }}
+    
