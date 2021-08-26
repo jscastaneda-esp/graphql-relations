@@ -19,7 +19,7 @@ jobs:
     # - name: Log in to DO Container Registry
     #   run: doctl registry login --expiry-seconds 600
     - name: Update deployment file
-      run: ls -a ${{ github.workspace }}
+      run: ls -a
     - name: Update deployment file
       run: sed -i 's|<IMAGE>|registry.digitalocean.com/graphql-relations-test/graphql-relations:${{ github.event.inputs.version }}|' ${{ github.workspace }}/config/deployment.yml
     # - name: Save DigitalOcean kubeconfig with short-lived credentials
