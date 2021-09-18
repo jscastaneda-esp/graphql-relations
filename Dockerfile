@@ -10,5 +10,5 @@ WORKDIR /app
 COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install --production
 COPY --from=builder /app/dist ./dist
-EXPOSE 3000
+EXPOSE 3001
 CMD [ "npm", "run", "serve" ]

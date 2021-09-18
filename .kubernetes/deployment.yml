@@ -5,14 +5,14 @@ metadata:
   labels:
     app: graphql-relations
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: graphql-relations
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
+      maxSurge: 2
+      maxUnavailable: 2
   minReadySeconds: 5
   template:
     metadata:
@@ -23,25 +23,24 @@ spec:
       - name: graphql-relations
         image: <IMAGE>
         ports:
-        - containerPort: 3000
+        - containerPort: 3001
         resources:
           requests:
             cpu: 100m
           limits:
             cpu: 100m
       imagePullSecrets:
-      - name: graphql-relations-test
+      - name: graphql-relations
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: graphql-relations-service
 spec:
-  type: LoadBalancer
   ports:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 3000
+      targetPort: 3001
   selector:
     app: graphql-relations
