@@ -1,4 +1,4 @@
-name: Build, publish and deploy manually
+name: Build, publish and deploy
 
 on:
   workflow_dispatch:
@@ -23,16 +23,15 @@ jobs:
     - name: Log in to DO Container Registry
       run: doctl registry login --expiry-seconds 600
     - name: Tag image
-      run:
-        docker tag ${{ github.repository }}:${{ github.event.inputs.version }} registry.digitalocean.com/graphql-relations-test/graphql-relations:${{ github.event.inputs.version }}
+      run: docker tag ${{ github.repository }}:${{ github.event.inputs.version }} registry.digitalocean.com/graphql-relations/${{ github.repository }}:${{ github.event.inputs.version }}
     - name: Push image to DO Container Registry
-      run: docker push registry.digitalocean.com/graphql-relations-test/graphql-relations:${{ github.event.inputs.version }}
+      run: docker push registry.digitalocean.com/graphql-relations/${{ github.repository }}:${{ github.event.inputs.version }}
     - name: Update deployment file
-      run: sed -i 's|<IMAGE>|registry.digitalocean.com/graphql-relations-test/graphql-relations:${{ github.event.inputs.version }}|' .kubernetes/deployment.yml
+      run: sed -i 's|<IMAGE>|registry.digitalocean.com/graphql-relations/${{ github.repository }}:${{ github.event.inputs.version }}|' .kubernetes/deployment.yml
     - name: Save DigitalOcean kubeconfig with short-lived credentials
-      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 graphql-relations
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ github.repository }}
     - name: Deploy to DigitalOcean Kubernetes
       run: kubectl apply -f .kubernetes/deployment.yml
     - name: Verify deployment
-      run: kubectl rollout status deployment/graphql-relations
+      run: kubectl rollout status deployment/${{ github.repository }}
     
