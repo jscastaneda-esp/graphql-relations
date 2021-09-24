@@ -1,4 +1,4 @@
-export const authors = [
+export let authors = [
   {
     id: "1",
     name: "Issac Asimov",

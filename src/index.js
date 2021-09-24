@@ -15,5 +15,5 @@ server.start(
         ? "/"
         : false,
   },
-  ({ port }) => console.log(`Server is running port ${port}`)
+  ({ port }) => console.log(`Server is running port http://localhost:${port}`)
 );
